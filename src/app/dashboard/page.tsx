@@ -6,13 +6,12 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/db";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { Scan } from "@prisma/client";
 
 export default async function DashboardPage() {
   const { userId } = await auth();
   if (!userId) return null;
 
-  const scans: Scan[] = await prisma.scan.findMany({
+  const scans = await prisma.scan.findMany({
     where: { userId },
     orderBy: { createdAt: "desc" },
   });
