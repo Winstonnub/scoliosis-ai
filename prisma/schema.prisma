@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Scan {
+  id               String      @id @default(cuid())
+  userId           String
+  originalImageUrl String?
+  createdAt        DateTime    @default(now())
+  detections       Detection[]
+}
+
+model Detection {
+  id         String   @id @default(cuid())
+  scanId     String
+  className  String
+  confidence Float
+  x1         Float
+  y1         Float
+  x2         Float
+  y2         Float
+
+  scan Scan @relation(fields: [scanId], references: [id], onDelete: Cascade)
+
+  @@index([scanId])
+}
