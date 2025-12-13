@@ -59,9 +59,13 @@ export async function POST(req: Request) {
     const buf = await streamToBuffer(obj.Body);
 
     // 5) Send bytes to FastAPI as multipart/form-data
-    const blob = new Blob([buf]);
+    // 5) Send bytes to FastAPI as multipart/form-data
+    // Convert Buffer -> Uint8Array so it's a valid BlobPart in strict TS + Node builds
+    const bytes = new Uint8Array(buf);
+
     const form = new FormData();
-    form.append("file", blob, "xray.png");
+    const file = new File([bytes], "xray.png", { type: "image/png" });
+    form.append("file", file);
 
     const baseUrl = process.env.INFERENCE_URL ?? "http://localhost:8001";
     const inferRes = await fetch(`${baseUrl}/predict`, {
