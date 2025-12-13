@@ -6,11 +6,21 @@ datasource db {
   provider = "postgresql"
 }
 
+enum ScanStatus {
+  UPLOADED
+  RUNNING
+  DONE
+  FAILED
+}
+
 model Scan {
   id               String      @id @default(cuid())
   userId           String
   originalImageUrl String?
   createdAt        DateTime    @default(now())
+
+  status           ScanStatus  @default(UPLOADED)  // ✅ add this line
+
   detections       Detection[]
 }
 

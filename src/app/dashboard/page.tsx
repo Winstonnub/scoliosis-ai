@@ -1,16 +1,19 @@
-import Link from "next/link"; // client-side navigation
-import { auth } from "@clerk/nextjs/server"; // server-side auth (gets userId)
-import { prisma } from "@/lib/db"; // your Prisma client
-import { Button } from "@/components/ui/button"; // shadcn button
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"; // shadcn card
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+import Link from "next/link";
+import { auth } from "@clerk/nextjs/server";
+import { prisma } from "@/lib/db";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default async function DashboardPage() {
-  const { userId } = await auth(); // get the current signed-in user id
-  if (!userId) return null; // middleware should prevent this, but keep it safe
+  const { userId } = await auth();
+  if (!userId) return null;
 
   const scans = await prisma.scan.findMany({
-    where: { userId }, // only show this user's scans
-    orderBy: { createdAt: "desc" }, // newest first
+    where: { userId },
+    orderBy: { createdAt: "desc" },
   });
 
   return (
