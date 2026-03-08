@@ -20,6 +20,7 @@ model Scan {
   createdAt        DateTime    @default(now())
 
   status           ScanStatus  @default(UPLOADED)  // ✅ add this line
+  inferenceTime    Int?
 
   detections       Detection[]
 }

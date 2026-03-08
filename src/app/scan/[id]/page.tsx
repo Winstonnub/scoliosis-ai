@@ -134,6 +134,11 @@ export default async function ScanPage({ params }: { params: ParamsMaybePromise 
         {/* Status (this is how we track progress) */}
         <p>
           Status: <span className="font-semibold">{scan.status}</span>
+          {scan.inferenceTime !== null && scan.inferenceTime !== undefined && (
+            <span className="ml-2 text-sm text-muted-foreground">
+              (Latency: {(scan.inferenceTime / 1000).toFixed(2)}s)
+            </span>
+          )}
         </p>
 
         {/* Helpful message when FAILED */}

@@ -68,6 +68,7 @@ export async function POST(req: Request) {
     form.append("file", file);
 
     const baseUrl = process.env.INFERENCE_URL ?? "http://localhost:8001";
+    const startTime = Date.now();
     const inferRes = await fetch(`${baseUrl}/predict`, {
       method: "POST",
       body: form,
@@ -75,6 +76,8 @@ export async function POST(req: Request) {
         ? { "x-api-key": process.env.INFERENCE_API_KEY }
         : undefined,
     });
+    const endTime = Date.now();
+    const inferenceTime = endTime - startTime;
     if (!inferRes.ok) {
       const text = await inferRes.text();
       throw new Error(`Inference service error: ${text}`);
@@ -102,7 +105,7 @@ export async function POST(req: Request) {
     // 7) Mark DONE
     await prisma.scan.update({
       where: { id: scanId },
-      data: { status: "DONE" },
+      data: { status: "DONE", inferenceTime },
     });
 
     return NextResponse.json({ ok: true, status: "DONE", count: result.num_detections });
